@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  height: 100%;
+  min-width: 0;
+}
+
+.evolution-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 20rem;
+}
+
+.evolution-card__head {
+  margin-bottom: 0.5rem;
+}
+
+.evolution-card__chart {
+  position: relative;
+  flex: 1;
+  min-height: 14rem;
+  width: 100%;
+}

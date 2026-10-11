@@ -1,0 +1,50 @@
+<div
+  class="main-layout"
+  [class.main-layout--collapsed]="sidebarCollapsed()"
+  [class.main-layout--mobile-open]="mobileSidebarOpen()"
+>
+  <app-sidebar
+    [collapsed]="sidebarCollapsed()"
+    [mobileOpen]="mobileSidebarOpen()"
+    (collapseToggle)="toggleSidebarCollapse()"
+    (navigate)="closeMobileSidebar()"
+    (newRecord)="onNewRecord()"
+  />
+
+  @if (mobileSidebarOpen()) {
+    <button
+      type="button"
+      class="main-layout__backdrop"
+      aria-label="Cerrar menú"
+      (click)="closeMobileSidebar()"
+    ></button>
+  }
+
+  <div class="main-layout__shell">
+    <app-navbar
+      [pageTitle]="pageMeta().title"
+      [pageSubtitle]="pageMeta().subtitle"
+      [userName]="userName()"
+      [periodLabel]="periodLabel()"
+      (menuToggle)="toggleMobileSidebar()"
+      (logout)="onLogout()"
+    />
+
+    <main class="main-layout__content">
+      <router-outlet />
+    </main>
+  </div>
+
+  <app-confirm-modal
+    [open]="logoutModalOpen()"
+    title="Cerrar sesión"
+    message="¿Seguro que quieres salir? Tendrás que iniciar sesión otra vez para continuar."
+    icon="log-out"
+    confirmLabel="Cerrar sesión"
+    cancelLabel="Cancelar"
+    confirmVariant="danger"
+    [loading]="logoutLoading()"
+    (confirmed)="confirmLogout()"
+    (closed)="closeLogoutModal()"
+  />
+</div>

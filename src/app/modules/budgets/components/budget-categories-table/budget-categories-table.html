@@ -1,0 +1,90 @@
+<article class="dash-card categories-card u-enter-card u-enter-delay-4" (click)="closeMenu()">
+  <header class="categories-card__head">
+    <h3 class="dash-card__heading">Categorías del presupuesto</h3>
+  </header>
+
+  <div class="categories-card__table-wrap">
+    <table class="categories-table">
+      <thead>
+        <tr>
+          <th>Categoría</th>
+          <th>Presupuestado</th>
+          <th>Gastado</th>
+          <th>Disponible</th>
+          <th>Progreso</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.id) {
+          <tr>
+            <td>
+              <div class="categories-table__cat">
+                <span class="categories-table__icon" [style.color]="row.color" aria-hidden="true">
+                  <lucide-icon [name]="row.icon" [size]="16" />
+                </span>
+                <strong>{{ row.name }}</strong>
+              </div>
+            </td>
+            <td>{{ row.budgeted | currencyRd }}</td>
+            <td>{{ row.spent | currencyRd }}</td>
+            <td [class.categories-table__neg]="row.available < 0">
+              {{ row.available | currencyRd }}
+            </td>
+            <td>
+              <div class="categories-table__progress">
+                <div class="categories-table__bar" aria-hidden="true">
+                  <span
+                    [style.width.%]="progressWidth(row.percent)"
+                    [class.categories-table__bar-fill--limit]="row.state === 'limit'"
+                    [class.categories-table__bar-fill--over]="row.state === 'over'"
+                  ></span>
+                </div>
+                <em>{{ row.percent }}%</em>
+              </div>
+            </td>
+            <td>
+              <span
+                class="categories-table__badge"
+                [class.categories-table__badge--limit]="row.state === 'limit'"
+                [class.categories-table__badge--over]="row.state === 'over'"
+              >
+                {{ row.stateLabel }}
+              </span>
+            </td>
+            <td class="categories-table__actions">
+              <button
+                type="button"
+                class="categories-table__menu-btn"
+                aria-label="Acciones de categoría"
+                (click)="toggleMenu(row.id, $event)"
+              >
+                <lucide-icon name="more-horizontal" [size]="18" />
+              </button>
+
+              @if (openMenuId() === row.id) {
+                <div class="categories-table__menu" (click)="$event.stopPropagation()" role="menu">
+                  <button type="button" role="menuitem" (click)="onRegister(row)">
+                    <lucide-icon name="plus" [size]="14" />
+                    Registrar gasto
+                  </button>
+                  <button type="button" role="menuitem" (click)="onAdjust(row)">
+                    <lucide-icon name="sliders-horizontal" [size]="14" />
+                    Ajustar límite
+                  </button>
+                </div>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="7" class="categories-table__empty">
+              Aún no hay categorías en este presupuesto.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</article>

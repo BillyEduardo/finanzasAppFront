@@ -1,0 +1,122 @@
+:host {
+  display: block;
+  height: 100%;
+  min-width: 0;
+}
+
+.budgets-card {
+  height: 100%;
+  min-width: 0;
+}
+
+.budgets-card__head {
+  margin-bottom: 1.15rem;
+}
+
+.budgets-card__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.budget-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border-subtle);
+  min-width: 0;
+}
+
+.budget-item__ring {
+  position: relative;
+  width: 4.25rem;
+  height: 4.25rem;
+  flex-shrink: 0;
+}
+
+.budget-item__ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.budget-item__track,
+.budget-item__progress {
+  fill: none;
+  stroke-width: 7;
+}
+
+.budget-item__track {
+  stroke: #e5eef0;
+}
+
+.budget-item__progress {
+  stroke: var(--color-primary);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.7s var(--motion-ease);
+}
+
+.budget-item__ring span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.budget-item__info {
+  min-width: 0;
+}
+
+.budget-item__info strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.budget-item__info p {
+  margin: 0;
+  font-size: clamp(0.72rem, 1.8vw, 0.8rem);
+  font-weight: 600;
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.budget-item__info p span {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.budget-item__info small {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.budget-item__info em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+@media (max-width: 900px) {
+  .budgets-card__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .budget-item {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+}

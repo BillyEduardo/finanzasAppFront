@@ -1,0 +1,362 @@
+<div class="register">
+  <aside class="register__brand">
+    <div class="register__brand-inner">
+      <div class="register__logo u-enter">
+        <span class="register__logo-mark" aria-hidden="true">
+          <lucide-icon name="activity" [size]="20" />
+        </span>
+        <span class="register__logo-text">Finanzas</span>
+      </div>
+
+      <h1 class="register__headline u-enter u-enter-delay-1">
+        Empieza a tomar control de
+        <span>tus finanzas</span>.
+      </h1>
+      <p class="register__tagline u-enter u-enter-delay-2">
+        Crea tu cuenta y accede a herramientas que te ayudarán a alcanzar tus metas.
+      </p>
+
+      <ul class="register__features">
+        <li class="register__feature u-enter u-enter-delay-3">
+          <span class="register__feature-icon" aria-hidden="true">
+            <lucide-icon name="shield" [size]="18" />
+          </span>
+          <div>
+            <strong>Seguridad de primer nivel</strong>
+            <p>Protegemos tu información y tus transacciones.</p>
+          </div>
+        </li>
+        <li class="register__feature u-enter u-enter-delay-4">
+          <span class="register__feature-icon" aria-hidden="true">
+            <lucide-icon name="bar-chart-3" [size]="18" />
+          </span>
+          <div>
+            <strong>Control y visibilidad</strong>
+            <p>Visualiza, analiza y mejora tus finanzas personales.</p>
+          </div>
+        </li>
+        <li class="register__feature u-enter u-enter-delay-5">
+          <span class="register__feature-icon" aria-hidden="true">
+            <lucide-icon name="target" [size]="18" />
+          </span>
+          <div>
+            <strong>Alcanza tus metas</strong>
+            <p>Establece objetivos y recibe insights para lograrlos.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="register__wave" aria-hidden="true">
+      <svg class="register__wave-line" viewBox="0 0 420 100" fill="none" preserveAspectRatio="xMidYMid meet">
+        <path
+          d="M0 62 C55 62 75 28 120 34 C165 40 185 78 235 70 C285 62 310 28 360 36 C390 41 405 55 420 50"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+        <circle cx="120" cy="34" r="4.5" fill="currentColor" />
+        <circle cx="235" cy="70" r="4.5" fill="currentColor" />
+        <circle cx="360" cy="36" r="4.5" fill="currentColor" />
+      </svg>
+      <div class="register__wave-badge">
+        <lucide-icon name="bar-chart-3" [size]="16" />
+      </div>
+    </div>
+  </aside>
+
+  <section class="register__panel">
+    <header class="register__topbar u-enter u-enter-delay-1">
+      <span>¿Ya tienes una cuenta?</span>
+      <a routerLink="/login" class="register__login-btn">Iniciar sesión</a>
+    </header>
+
+    <div class="register__card-wrap">
+      <div class="register__card u-enter-card u-enter-delay-3">
+        <div class="register__card-head">
+          <div class="register__card-badge" aria-hidden="true">
+            <lucide-icon name="user-plus" [size]="22" />
+          </div>
+          <h2 class="register__title">Crear cuenta</h2>
+          <p class="register__subtitle">Completa los datos para registrarte.</p>
+        </div>
+
+        @if (errorMessage()) {
+          <div class="register__alert" role="alert">
+            <lucide-icon name="circle-alert" [size]="18" />
+            <span>{{ errorMessage() }}</span>
+          </div>
+        }
+
+        <form class="register__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+          <div class="register__grid">
+            <label class="field">
+              <span class="field__label">Nombre completo</span>
+              <div
+                class="field__control"
+                [class.field__control--invalid]="
+                  form.controls.displayName.touched && form.controls.displayName.invalid
+                "
+              >
+                <lucide-icon name="user" [size]="18" />
+                <input
+                  type="text"
+                  formControlName="displayName"
+                  placeholder="Ej. Billy Eduardo Dionicio"
+                  autocomplete="name"
+                />
+              </div>
+              @if (
+                form.controls.displayName.touched && form.controls.displayName.hasError('required')
+              ) {
+                <span class="field__error">El nombre es obligatorio</span>
+              }
+            </label>
+
+            <label class="field">
+              <span class="field__label">Correo electrónico</span>
+              <div
+                class="field__control"
+                [class.field__control--invalid]="
+                  form.controls.email.touched && form.controls.email.invalid
+                "
+              >
+                <lucide-icon name="mail" [size]="18" />
+                <input
+                  type="email"
+                  formControlName="email"
+                  placeholder="Ej. billy@email.com"
+                  autocomplete="email"
+                />
+              </div>
+              @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+                <span class="field__error">El correo es obligatorio</span>
+              } @else if (form.controls.email.touched && form.controls.email.hasError('email')) {
+                <span class="field__error">Ingresa un correo válido</span>
+              }
+            </label>
+
+            <label class="field">
+              <span class="field__label">Nombre de usuario</span>
+              <div
+                class="field__control"
+                [class.field__control--invalid]="
+                  form.controls.username.touched && form.controls.username.invalid
+                "
+              >
+                <lucide-icon name="at-sign" [size]="18" />
+                <input
+                  type="text"
+                  formControlName="username"
+                  placeholder="Ej. billy.dionicio"
+                  autocomplete="username"
+                />
+              </div>
+              @if (form.controls.username.touched && form.controls.username.hasError('required')) {
+                <span class="field__error">El usuario es obligatorio</span>
+              } @else if (
+                form.controls.username.touched && form.controls.username.hasError('pattern')
+              ) {
+                <span class="field__error">Solo letras, números, . y _</span>
+              }
+            </label>
+
+            <label class="field">
+              <span class="field__label">Moneda</span>
+              <div
+                class="field__control"
+                [class.field__control--invalid]="
+                  form.controls.currencyCode.touched && form.controls.currencyCode.invalid
+                "
+              >
+                <lucide-icon name="banknote" [size]="18" />
+                <select formControlName="currencyCode" aria-label="Código de moneda">
+                  @for (currency of currencies; track currency.code) {
+                    <option [value]="currency.code">{{ currency.label }}</option>
+                  }
+                </select>
+              </div>
+              @if (
+                form.controls.currencyCode.touched &&
+                form.controls.currencyCode.hasError('required')
+              ) {
+                <span class="field__error">Selecciona una moneda</span>
+              }
+            </label>
+
+            <label class="field">
+              <span class="field__label">Contraseña</span>
+              <div
+                class="field__control"
+                [class.field__control--invalid]="
+                  form.controls.password.touched && form.controls.password.invalid
+                "
+              >
+                <lucide-icon name="lock" [size]="18" />
+                <input
+                  [type]="showPassword() ? 'text' : 'password'"
+                  formControlName="password"
+                  placeholder="••••••••"
+                  autocomplete="new-password"
+                />
+                <button
+                  type="button"
+                  class="field__toggle"
+                  [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                  (click)="togglePassword()"
+                >
+                  <lucide-icon [name]="showPassword() ? 'eye-off' : 'eye'" [size]="18" />
+                </button>
+              </div>
+
+              @if (passwordStrength().level !== 'empty') {
+                <div
+                  class="strength"
+                  [attr.data-level]="passwordStrength().level"
+                  aria-live="polite"
+                >
+                  <div class="strength__bars" aria-hidden="true">
+                    @for (i of [1, 2, 3, 4, 5]; track i) {
+                      <span [class.strength__bar--on]="passwordStrength().score >= i"></span>
+                    }
+                  </div>
+                  <p class="strength__label">
+                    Seguridad de la contraseña:
+                    <strong>{{ passwordStrength().label }}</strong>
+                  </p>
+                </div>
+              }
+
+              @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+                <span class="field__error">La contraseña es obligatoria</span>
+              } @else if (
+                form.controls.password.touched && form.controls.password.hasError('minlength')
+              ) {
+                <span class="field__error">Mínimo 6 caracteres</span>
+              }
+            </label>
+
+            <label class="field">
+              <span class="field__label">Confirmar contraseña</span>
+              <div
+                class="field__control"
+                [class.field__control--invalid]="
+                  form.controls.confirmPassword.touched &&
+                  (form.controls.confirmPassword.invalid || form.hasError('passwordsMismatch'))
+                "
+              >
+                <lucide-icon name="lock" [size]="18" />
+                <input
+                  [type]="showConfirmPassword() ? 'text' : 'password'"
+                  formControlName="confirmPassword"
+                  placeholder="••••••••"
+                  autocomplete="new-password"
+                />
+                <button
+                  type="button"
+                  class="field__toggle"
+                  [attr.aria-label]="
+                    showConfirmPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'
+                  "
+                  (click)="toggleConfirmPassword()"
+                >
+                  <lucide-icon [name]="showConfirmPassword() ? 'eye-off' : 'eye'" [size]="18" />
+                </button>
+              </div>
+              @if (
+                form.controls.confirmPassword.touched &&
+                form.controls.confirmPassword.hasError('required')
+              ) {
+                <span class="field__error">Confirma tu contraseña</span>
+              } @else if (
+                form.controls.confirmPassword.touched && form.hasError('passwordsMismatch')
+              ) {
+                <span class="field__error">Las contraseñas no coinciden</span>
+              }
+            </label>
+          </div>
+
+          <div class="register__secure">
+            <lucide-icon name="lock" [size]="18" />
+            <p>
+              Tu información está segura. Utilizamos encriptación avanzada para proteger tus datos
+              y garantizar tu privacidad.
+            </p>
+          </div>
+
+          <label class="checkbox">
+            <input type="checkbox" formControlName="acceptTerms" />
+            <span class="checkbox__box" aria-hidden="true">
+              <lucide-icon name="check" [size]="12" />
+            </span>
+            <span>
+              Acepto los
+              <a href="#" (click)="$event.preventDefault()">Términos y condiciones</a>
+              y la
+              <a href="#" (click)="$event.preventDefault()">Política de privacidad</a>
+            </span>
+          </label>
+          @if (form.controls.acceptTerms.touched && form.controls.acceptTerms.hasError('required')) {
+            <span class="field__error">Debes aceptar los términos para continuar</span>
+          }
+
+          <button class="btn btn--primary" type="submit" [disabled]="loading()">
+            @if (loading()) {
+              <span class="btn__spinner" aria-hidden="true"></span>
+              Creando cuenta…
+            } @else {
+              Crear cuenta
+            }
+          </button>
+        </form>
+
+        <div class="register__divider"><span>o regístrate con</span></div>
+
+        <div class="register__social">
+          <button type="button" class="social-btn" disabled title="Google — próximamente" aria-label="Google">
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <path
+                fill="#FFC107"
+                d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.2 6.1 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"
+              />
+              <path
+                fill="#FF3D00"
+                d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.2 6.1 29.4 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"
+              />
+              <path
+                fill="#4CAF50"
+                d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.3 26.7 36 24 36c-5.3 0-9.7-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"
+              />
+              <path
+                fill="#1976D2"
+                d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.5l.1.1 6.2 5.2C39.2 37.3 44 32 44 24c0-1.3-.1-2.6-.4-3.9z"
+              />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="social-btn"
+            disabled
+            title="Microsoft — próximamente"
+            aria-label="Microsoft"
+          >
+            <svg viewBox="0 0 23 23" aria-hidden="true">
+              <path fill="#F25022" d="M1 1h10v10H1z" />
+              <path fill="#00A4EF" d="M12 1h10v10H12z" />
+              <path fill="#7FBA00" d="M1 12h10v10H1z" />
+              <path fill="#FFB900" d="M12 12h10v10H12z" />
+            </svg>
+          </button>
+          <button type="button" class="social-btn" disabled title="Apple — próximamente" aria-label="Apple">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M16.4 12.7c0-2.1 1.7-3.1 1.8-3.2-1-1.4-2.5-1.6-3-1.7-1.3-.1-2.5.8-3.1.8-.7 0-1.7-.7-2.8-.7-1.4 0-2.8.9-3.5 2.2-1.5 2.6-.4 6.5 1.1 8.6.7 1 1.6 2.2 2.7 2.1 1.1 0 1.5-.7 2.8-.7s1.7.7 2.8.7c1.2 0 1.9-1 2.6-2 .8-1.2 1.1-2.3 1.1-2.4-.1 0-2.1-.8-2.1-3.7zM14.3 6.5c.6-.7 1-1.7.9-2.7-0.9.1-1.9.6-2.5 1.3-.6.6-1.1 1.6-1 2.6 1 .1 1.9-.5 2.6-1.2z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

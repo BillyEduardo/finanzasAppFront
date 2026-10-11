@@ -1,0 +1,13 @@
+<article class="dash-card stat-card u-enter-card u-enter-delay-1">
+  <div class="stat-card__top">
+    <h3 class="dash-card__title">Presupuesto</h3>
+    <span class="stat-card__icon" aria-hidden="true">
+      <lucide-icon name="wallet" [size]="18" />
+    </span>
+  </div>
+  <p class="stat-card__value">{{ amount() | currencyRd }}</p>
+  <div class="stat-card__bar" aria-hidden="true">
+    <span [style.width.%]="usedPercent()"></span>
+  </div>
+  <p class="stat-card__bar-label">{{ usedPercent() }}% utilizado</p>
+</article>

@@ -1,0 +1,72 @@
+<aside
+  class="sidebar"
+  [class.sidebar--collapsed]="collapsed()"
+  [class.sidebar--mobile-open]="mobileOpen()"
+  [attr.aria-expanded]="!collapsed()"
+>
+  <div class="sidebar__header">
+    <div class="sidebar__brand">
+      <div class="sidebar__logo" aria-hidden="true">
+        <lucide-icon name="activity" [size]="22" />
+      </div>
+      @if (!collapsed()) {
+        <span class="sidebar__brand-name">Finanzas</span>
+      }
+    </div>
+
+    <button
+      type="button"
+      class="sidebar__collapse"
+      [attr.aria-label]="collapsed() ? 'Expandir menú' : 'Colapsar menú'"
+      [attr.title]="collapsed() ? 'Expandir menú' : 'Colapsar menú'"
+      (click)="onCollapseToggle()"
+    >
+      <lucide-icon [name]="collapsed() ? 'chevron-right' : 'panel-left'" [size]="18" />
+    </button>
+  </div>
+
+  <nav class="sidebar__nav" aria-label="Navegación principal">
+    @for (item of navItems; track item.label) {
+      @if (item.disabled) {
+        <span
+          class="sidebar__link sidebar__link--disabled"
+          [attr.title]="collapsed() ? item.label + ' (próximamente)' : null"
+        >
+          <lucide-icon class="sidebar__icon" [name]="item.icon" [size]="20" />
+          @if (!collapsed()) {
+            <span class="sidebar__label">{{ item.label }}</span>
+            @if (item.badge) {
+              <span class="sidebar__badge">{{ item.badge }}</span>
+            }
+          }
+        </span>
+      } @else {
+        <a
+          class="sidebar__link"
+          [routerLink]="item.route"
+          routerLinkActive="sidebar__link--active"
+          [attr.title]="collapsed() ? item.label : null"
+          (click)="onNavigate()"
+        >
+          <lucide-icon class="sidebar__icon" [name]="item.icon" [size]="20" />
+          @if (!collapsed()) {
+            <span class="sidebar__label">{{ item.label }}</span>
+          }
+        </a>
+      }
+    }
+  </nav>
+
+  @if (!collapsed()) {
+    <div class="sidebar__promo">
+      <div class="sidebar__promo-icon" aria-hidden="true">
+        <lucide-icon name="piggy-bank" [size]="28" />
+      </div>
+      <p class="sidebar__promo-text">Controla tus finanzas con claridad</p>
+      <button type="button" class="sidebar__promo-btn" (click)="onNewRecord()">
+        <lucide-icon name="plus" [size]="16" />
+        Nuevo registro
+      </button>
+    </div>
+  }
+</aside>

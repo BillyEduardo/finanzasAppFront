@@ -1,0 +1,206 @@
+:host {
+  display: block;
+  height: 100%;
+  min-width: 0;
+}
+
+.categories-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+}
+
+.categories-card__head {
+  margin-bottom: 1rem;
+}
+
+.categories-card__table-wrap {
+  overflow-x: auto;
+  margin: 0 -0.25rem;
+  padding: 0 0.25rem;
+}
+
+.categories-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 44rem;
+}
+
+.categories-table th {
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.categories-table td {
+  padding: 0.85rem 0.65rem;
+  font-size: 0.84rem;
+  font-weight: 550;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border-subtle);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.categories-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.categories-table__cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.categories-table__icon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: var(--color-primary-muted);
+  flex-shrink: 0;
+}
+
+.categories-table__cat strong {
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
+.categories-table__neg {
+  color: var(--color-danger);
+}
+
+.categories-table__progress {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 7.5rem;
+}
+
+.categories-table__bar {
+  flex: 1;
+  height: 0.38rem;
+  border-radius: 999px;
+  background: #e8eef0;
+  overflow: hidden;
+}
+
+.categories-table__bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #0f766e, var(--color-primary));
+  transition: width 0.45s var(--motion-ease);
+}
+
+.categories-table__bar-fill--limit {
+  background: linear-gradient(90deg, #d97706, #f59e0b);
+}
+
+.categories-table__bar-fill--over {
+  background: linear-gradient(90deg, #dc2626, #ef4444);
+}
+
+.categories-table__progress em {
+  font-style: normal;
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--color-text-secondary);
+  min-width: 2.4rem;
+}
+
+.categories-table__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-income);
+  background: rgb(9 188 138 / 0.14);
+}
+
+.categories-table__badge--limit {
+  color: #b45309;
+  background: rgb(245 158 11 / 0.16);
+}
+
+.categories-table__badge--over {
+  color: var(--color-expense);
+  background: var(--color-danger-muted);
+}
+
+.categories-table__actions {
+  position: relative;
+  width: 2.5rem;
+}
+
+.categories-table__menu-btn {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.categories-table__menu-btn:hover {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+.categories-table__menu {
+  position: absolute;
+  top: 2.15rem;
+  right: 0;
+  z-index: 5;
+  min-width: 11.5rem;
+  padding: 0.35rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.categories-table__menu button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0.55rem 0.6rem;
+  border-radius: 0.45rem;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 550;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.categories-table__menu button:hover {
+  background: var(--color-surface-muted);
+}
+
+.categories-table__empty {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-weight: 500 !important;
+  padding: 2rem 1rem !important;
+}

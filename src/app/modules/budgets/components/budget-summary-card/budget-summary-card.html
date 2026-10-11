@@ -1,0 +1,29 @@
+<article class="dash-card summary-card u-enter-card u-enter-delay-2">
+  <header class="summary-card__head">
+    <h3 class="dash-card__heading">Resumen del presupuesto</h3>
+  </header>
+
+  <div class="summary-card__body">
+    <div class="summary-card__chart-wrap">
+      <canvas #chart aria-label="Distribución del gasto por categoría"></canvas>
+      <div class="summary-card__center">
+        <strong>{{ spent() | currencyRd }}</strong>
+        <span>Gastado</span>
+        <em>{{ spentPercent() }}%</em>
+      </div>
+    </div>
+
+    <ul class="summary-card__legend">
+      @for (cat of categories(); track cat.id) {
+        <li>
+          <span class="summary-card__dot" [style.background]="cat.color"></span>
+          <div class="summary-card__info">
+            <strong>{{ cat.name }}</strong>
+            <span>{{ legendPercent(cat.spent) }}% del gasto</span>
+          </div>
+          <span class="summary-card__amount">{{ cat.spent | currencyRd }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+</article>

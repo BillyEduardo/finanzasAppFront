@@ -1,0 +1,390 @@
+<section class="tx">
+  <div class="tx__layout">
+    <div class="tx__main">
+      <div class="tx__toolbar u-enter">
+        <div class="tx__toolbar-copy">
+          <p class="tx__toolbar-label">Movimientos</p>
+          <p class="tx__toolbar-hint">Administra tus ingresos y gastos</p>
+        </div>
+        <div class="tx__toolbar-actions">
+          <button type="button" class="action-btn" (click)="exportHint()">
+            <lucide-icon name="download" [size]="16" />
+            <span>Exportar</span>
+            <lucide-icon name="chevron-down" [size]="15" />
+          </button>
+          <button type="button" class="action-btn action-btn--primary" (click)="startCreate()">
+            <lucide-icon name="plus" [size]="16" />
+            <span>Nuevo registro</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="tx__stats">
+        <article class="dash-card stat-card u-enter-card">
+          <div class="stat-card__top">
+            <h3 class="dash-card__title">Ingresos</h3>
+            <span class="stat-card__icon" aria-hidden="true">
+              <lucide-icon name="trending-up" [size]="18" />
+            </span>
+          </div>
+          <p class="stat-card__value stat-card__value--income">
+            {{ stats().income | currencyRd }}
+          </p>
+          <p class="stat-card__meta">Entradas del periodo</p>
+        </article>
+
+        <article class="dash-card stat-card u-enter-card u-enter-delay-1">
+          <div class="stat-card__top">
+            <h3 class="dash-card__title">Gastos</h3>
+            <span class="stat-card__icon stat-card__icon--danger" aria-hidden="true">
+              <lucide-icon name="trending-down" [size]="18" />
+            </span>
+          </div>
+          <p class="stat-card__value stat-card__value--expense">
+            {{ stats().expense | currencyRd }}
+          </p>
+          <p class="stat-card__meta">Salidas del periodo</p>
+        </article>
+
+        <article class="dash-card stat-card u-enter-card u-enter-delay-2">
+          <div class="stat-card__top">
+            <h3 class="dash-card__title">Balance</h3>
+            <span class="stat-card__icon stat-card__icon--blue" aria-hidden="true">
+              <lucide-icon name="wallet" [size]="18" />
+            </span>
+          </div>
+          <p class="stat-card__value stat-card__value--balance">
+            {{ stats().balance | currencyRd }}
+          </p>
+          <p class="stat-card__meta">Ingresos − gastos</p>
+        </article>
+
+        <article class="dash-card stat-card u-enter-card u-enter-delay-3">
+          <div class="stat-card__top">
+            <h3 class="dash-card__title">Transacciones</h3>
+            <span class="stat-card__icon stat-card__icon--purple" aria-hidden="true">
+              <lucide-icon name="bar-chart-3" [size]="18" />
+            </span>
+          </div>
+          <p class="stat-card__value">{{ stats().count }}</p>
+          <p class="stat-card__meta">Registros totales</p>
+        </article>
+      </div>
+
+      <article class="dash-card table-card u-enter-card u-enter-delay-4">
+        <div class="filters">
+          <label class="filters__search">
+            <lucide-icon name="search" [size]="16" />
+            <input
+              type="search"
+              [ngModel]="search()"
+              (ngModelChange)="onSearch($event)"
+              placeholder="Buscar descripción, categoría..."
+              aria-label="Buscar registros"
+            />
+          </label>
+
+          <div class="filters__dates" [attr.title]="periodLabel()">
+            <lucide-icon name="calendar" [size]="16" />
+            <input
+              type="date"
+              [ngModel]="fromDate()"
+              (ngModelChange)="onFromDate($event)"
+              aria-label="Fecha desde"
+            />
+            <span aria-hidden="true">–</span>
+            <input
+              type="date"
+              [ngModel]="toDate()"
+              (ngModelChange)="onToDate($event)"
+              aria-label="Fecha hasta"
+            />
+          </div>
+
+          <select
+            class="filters__select"
+            [ngModel]="categoryFilter()"
+            (ngModelChange)="onCategoryFilter($event)"
+            aria-label="Filtrar por categoría"
+          >
+            <option value="all">Todas las categorías</option>
+            @for (cat of categories(); track cat.id) {
+              <option [value]="cat.id">{{ cat.name }}</option>
+            }
+          </select>
+
+          <select
+            class="filters__select"
+            [ngModel]="typeFilter()"
+            (ngModelChange)="onTypeFilter($event)"
+            aria-label="Filtrar por tipo"
+          >
+            <option value="all">Todos los tipos</option>
+            <option value="Expense">Gastos</option>
+            <option value="Income">Ingresos</option>
+          </select>
+
+          <button
+            type="button"
+            class="filters__more"
+            [class.filters__more--active]="showMoreFilters()"
+            (click)="toggleMoreFilters()"
+          >
+            <lucide-icon name="sliders-horizontal" [size]="15" />
+            Más filtros
+          </button>
+        </div>
+
+        @if (showMoreFilters()) {
+          <div class="filters__extra u-enter-fade">
+            <button type="button" class="filters__clear" (click)="clearFilters()">
+              <lucide-icon name="refresh-cw" [size]="15" />
+              Limpiar filtros
+            </button>
+            <p class="filters__period">Periodo: {{ periodLabel() }}</p>
+          </div>
+        }
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Categoría</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (group of grouped(); track group.key) {
+                <tr class="group-row">
+                  <td colspan="6">{{ group.label }}</td>
+                </tr>
+                @for (row of group.items; track row.id) {
+                  <tr>
+                    <td class="time-cell">{{ row.timeLabel }}</td>
+                    <td>
+                      <span
+                        class="type-pill"
+                        [class.type-pill--income]="row.type === 'Income'"
+                        [attr.title]="row.type === 'Income' ? 'Ingreso' : 'Gasto'"
+                      >
+                        <lucide-icon
+                          [name]="row.type === 'Income' ? 'arrow-up-right' : 'arrow-down-left'"
+                          [size]="14"
+                        />
+                        <span>{{ row.type === 'Income' ? 'Ingreso' : 'Gasto' }}</span>
+                      </span>
+                    </td>
+                    <td>
+                      <div class="cat-cell">
+                        <span
+                          class="cat-cell__icon"
+                          [style.background]="row.category?.color || 'var(--color-primary)'"
+                          aria-hidden="true"
+                        >
+                          <lucide-icon [name]="row.category?.icon || 'tag'" [size]="14" />
+                        </span>
+                        <strong>{{ row.category?.name || 'Sin categoría' }}</strong>
+                      </div>
+                    </td>
+                    <td class="desc-cell">{{ row.description || '—' }}</td>
+                    <td>
+                      <span
+                        class="amount"
+                        [class.amount--income]="row.type === 'Income'"
+                        [class.amount--expense]="row.type === 'Expense'"
+                      >
+                        {{ row.type === 'Income' ? '+' : '-' }}
+                        {{ row.amount | currencyRd }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="row-actions">
+                        <button
+                          type="button"
+                          class="icon-btn"
+                          aria-label="Editar registro"
+                          (click)="startEdit(row)"
+                        >
+                          <lucide-icon name="pencil" [size]="15" />
+                        </button>
+                        <button
+                          type="button"
+                          class="icon-btn icon-btn--danger"
+                          aria-label="Eliminar registro"
+                          (click)="askDelete(row.id)"
+                        >
+                          <lucide-icon name="trash2Icon" [size]="15" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              } @empty {
+                <tr>
+                  <td colspan="6" class="empty-cell">No hay registros con esos filtros.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        @if (hasMore()) {
+          <footer class="table-footer">
+            <button type="button" class="load-more" (click)="loadMore()">Cargar más</button>
+          </footer>
+        }
+      </article>
+    </div>
+
+    <aside class="tx__side">
+      <article id="tx-form" class="dash-card form-card u-enter-card u-enter-delay-2">
+        <div class="form-card__head">
+          <h2 class="dash-card__heading">
+            {{ isEditing() ? 'Editar registro' : 'Nuevo registro' }}
+          </h2>
+          @if (isEditing()) {
+            <button type="button" class="form-card__cancel" (click)="cancelEdit()">Cancelar</button>
+          }
+        </div>
+
+        <div class="type-toggle" role="group" aria-label="Tipo de registro">
+          <button
+            type="button"
+            class="type-toggle__btn type-toggle__btn--expense"
+            [class.type-toggle__btn--active]="formType() === 'Expense'"
+            (click)="setFormType('Expense')"
+          >
+            <lucide-icon name="arrow-down-left" [size]="16" />
+            Gasto
+          </button>
+          <button
+            type="button"
+            class="type-toggle__btn type-toggle__btn--income"
+            [class.type-toggle__btn--active]="formType() === 'Income'"
+            (click)="setFormType('Income')"
+          >
+            <lucide-icon name="arrow-up-right" [size]="16" />
+            Ingreso
+          </button>
+        </div>
+
+        <label class="field">
+          <span class="field__label">Monto</span>
+          <div class="field__amount">
+            <span>RD$</span>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+              [ngModel]="formAmount()"
+              (ngModelChange)="formAmount.set($event === '' || $event == null ? null : +$event)"
+              aria-label="Monto"
+            />
+          </div>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Categoría</span>
+          <select
+            [ngModel]="formCategoryId()"
+            (ngModelChange)="formCategoryId.set($event)"
+            aria-label="Categoría"
+          >
+            <option value="">Selecciona una categoría</option>
+            @for (cat of formCategories(); track cat.id) {
+              <option [value]="cat.id">{{ cat.name }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Fecha</span>
+          <input
+            type="date"
+            [ngModel]="formDate()"
+            (ngModelChange)="formDate.set($event)"
+            aria-label="Fecha"
+          />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Descripción <em>(opcional)</em></span>
+          <textarea
+            rows="3"
+            placeholder="Ej. Almuerzo, quincena, Uber..."
+            [ngModel]="formDescription()"
+            (ngModelChange)="formDescription.set($event)"
+            aria-label="Descripción"
+          ></textarea>
+        </label>
+
+        @if (formError()) {
+          <p class="form-card__error" role="alert">{{ formError() }}</p>
+        }
+
+        <button type="button" class="action-btn action-btn--primary action-btn--block" (click)="saveRecord()">
+          <lucide-icon name="check" [size]="16" />
+          {{ isEditing() ? 'Guardar cambios' : 'Guardar registro' }}
+        </button>
+      </article>
+
+      <article class="dash-card summary-card u-enter-card u-enter-delay-3">
+        <h2 class="dash-card__heading">Resumen por categoría</h2>
+        <ul class="summary-list">
+          @for (item of categorySummary(); track item.id) {
+            <li class="summary-item">
+              <div class="summary-item__top">
+                <span class="summary-item__name">
+                  <i [style.background]="item.color" aria-hidden="true"></i>
+                  {{ item.name }}
+                </span>
+                <strong>{{ item.amount | currencyRd }}</strong>
+              </div>
+              <div class="summary-item__bar" aria-hidden="true">
+                <span [style.width.%]="item.percent" [style.background]="item.color"></span>
+              </div>
+            </li>
+          } @empty {
+            <li class="summary-empty">Sin gastos en el periodo filtrado.</li>
+          }
+        </ul>
+      </article>
+
+      <aside class="tip-box u-enter u-enter-delay-4" role="note">
+        <span class="tip-box__icon" aria-hidden="true">
+          <lucide-icon name="lightbulb" [size]="18" />
+        </span>
+        <div>
+          <strong>Consejo del día</strong>
+          <p>{{ tip }}</p>
+        </div>
+      </aside>
+    </aside>
+  </div>
+</section>
+
+@if (confirmDeleteId()) {
+  <div class="modal-backdrop u-enter-fade" (click)="cancelDelete()" role="presentation">
+    <div
+      class="confirm-modal u-enter-card"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Confirmar eliminación"
+      (click)="$event.stopPropagation()"
+    >
+      <h2>Eliminar registro</h2>
+      <p>Esta acción no se puede deshacer. ¿Seguro que quieres eliminarlo?</p>
+      <div class="confirm-modal__actions">
+        <button type="button" class="action-btn" (click)="cancelDelete()">Cancelar</button>
+        <button type="button" class="action-btn action-btn--danger" (click)="confirmDelete()">
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+}

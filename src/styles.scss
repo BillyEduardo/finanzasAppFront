@@ -1,1 +1,272 @@
-/* You can add global styles to this file, and also import other style files */
+@use 'tailwindcss';
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+
+  /* Principales */
+  --color-primary: #09bc8a;
+  --color-primary-hover: #08a87b;
+  --color-primary-muted: rgb(9 188 138 / 0.14);
+  --color-sidebar: #004346;
+  --color-dark: #172a3a;
+
+  /* Secundarios */
+  --color-secondary: #508991;
+  --color-accent: #75dddd;
+
+  /* Neutrales */
+  --color-bg: #f7f9fa;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f3f7f8;
+  --color-border: #e5e7eb;
+  --color-border-subtle: rgb(23 42 58 / 0.05);
+  --color-text: #1f2933;
+  --color-text-secondary: #6b7280;
+  --color-text-on-dark: #ffffff;
+  --color-text-muted-on-dark: rgb(255 255 255 / 0.65);
+  --color-danger: #ef4444;
+  --color-danger-muted: rgb(239 68 68 / 0.1);
+  --color-overlay: rgb(23 42 58 / 0.45);
+
+  /* Semánticos de dinero (fijos en ambos temas) */
+  --color-income: #047857;
+  --color-expense: #b91c1c;
+  --color-balance: #1d4ed8;
+
+  /* Layout */
+  --sidebar-width: 16.25rem;
+  --sidebar-width-collapsed: 5rem;
+  --navbar-height: 4.5rem;
+  --radius-sm: 0.625rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.125rem;
+  --shadow-sm: 0 1px 2px rgb(23 42 58 / 0.05);
+  --shadow-md: 0 8px 24px rgb(23 42 58 / 0.08);
+  --transition-fast: 160ms ease;
+  --transition-base: 220ms ease;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  /* Motion */
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-duration: 520ms;
+  --motion-duration-fast: 360ms;
+  --enter-delay: 0ms;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-primary: #0fd9a0;
+  --color-primary-hover: #12c791;
+  --color-primary-muted: rgb(15 217 160 / 0.16);
+  --color-sidebar: #031a1c;
+  --color-dark: #0b1620;
+
+  --color-secondary: #6aa3ab;
+  --color-accent: #7ee8e8;
+
+  --color-bg: #0b1218;
+  --color-surface: #121c24;
+  --color-surface-muted: #182430;
+  --color-border: #243140;
+  --color-border-subtle: rgb(255 255 255 / 0.06);
+  --color-text: #e8eef3;
+  --color-text-secondary: #94a3b8;
+  --color-text-on-dark: #ffffff;
+  --color-text-muted-on-dark: rgb(255 255 255 / 0.62);
+  --color-danger: #f87171;
+  --color-danger-muted: rgb(248 113 113 / 0.14);
+  --color-overlay: rgb(0 0 0 / 0.55);
+
+  /* Semánticos de dinero (mismos que light) */
+  --color-income: #047857;
+  --color-expense: #b91c1c;
+  --color-balance: #1d4ed8;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.35);
+  --shadow-md: 0 10px 28px rgb(0 0 0 / 0.45);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ——— Global smooth enter ——— */
+@keyframes u-enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes u-enter-card {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes u-enter-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Cada módulo/ruta al montarse */
+router-outlet + * {
+  animation: u-enter-fade var(--motion-duration-fast) var(--motion-ease) both;
+}
+
+/* Utilidades reutilizables */
+.u-enter {
+  animation: u-enter-up var(--motion-duration) var(--motion-ease) both;
+  animation-delay: var(--enter-delay);
+}
+
+.u-enter-card {
+  animation: u-enter-card var(--motion-duration) var(--motion-ease) both;
+  animation-delay: var(--enter-delay);
+}
+
+.u-enter-fade {
+  animation: u-enter-fade var(--motion-duration-fast) var(--motion-ease) both;
+  animation-delay: var(--enter-delay);
+}
+
+.u-enter-delay-1 {
+  --enter-delay: 60ms;
+}
+.u-enter-delay-2 {
+  --enter-delay: 120ms;
+}
+.u-enter-delay-3 {
+  --enter-delay: 180ms;
+}
+.u-enter-delay-4 {
+  --enter-delay: 240ms;
+}
+.u-enter-delay-5 {
+  --enter-delay: 300ms;
+}
+.u-enter-delay-6 {
+  --enter-delay: 360ms;
+}
+
+.u-card {
+  animation: u-enter-card var(--motion-duration) var(--motion-ease) both;
+  animation-delay: var(--enter-delay, 80ms);
+}
+
+/* Card base del dashboard */
+.dash-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(1rem, 2vw, 1.35rem);
+  min-width: 0;
+}
+
+.dash-card__title {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.dash-card__heading {
+  margin: 0;
+  font-size: clamp(0.92rem, 1.6vw, 1rem);
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 520px) {
+  .dash-card {
+    border-radius: var(--radius-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  router-outlet + *,
+  .u-enter,
+  .u-enter-card,
+  .u-enter-fade,
+  .u-card,
+  body {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

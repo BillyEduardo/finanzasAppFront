@@ -1,0 +1,22 @@
+<article class="dash-card actions-card u-enter-card u-enter-delay-5">
+  <header class="actions-card__head">
+    <h3 class="dash-card__heading">Acciones rápidas</h3>
+  </header>
+
+  <ul class="actions-card__list">
+    @for (action of actions; track action.label) {
+      <li>
+        <a [routerLink]="action.route" class="actions-card__item">
+          <span class="actions-card__icon" aria-hidden="true">
+            <lucide-icon [name]="action.icon" [size]="16" />
+          </span>
+          <div class="actions-card__text">
+            <strong>{{ action.label }}</strong>
+            <span>{{ action.description }}</span>
+          </div>
+          <lucide-icon name="chevron-right" [size]="16" class="actions-card__chevron" />
+        </a>
+      </li>
+    }
+  </ul>
+</article>

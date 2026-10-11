@@ -1,0 +1,14 @@
+@if (visible()) {
+  <aside class="tip-card u-enter u-enter-delay-6" role="note">
+    <span class="tip-card__icon" aria-hidden="true">
+      <lucide-icon name="lightbulb" [size]="18" />
+    </span>
+    <div class="tip-card__content">
+      <strong>Consejo del día</strong>
+      <p>{{ tip }}</p>
+    </div>
+    <button type="button" class="tip-card__close" aria-label="Cerrar consejo" (click)="dismiss()">
+      <lucide-icon name="x" [size]="16" />
+    </button>
+  </aside>
+}

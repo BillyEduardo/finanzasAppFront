@@ -1,0 +1,120 @@
+:host {
+  display: block;
+  height: 100%;
+  min-width: 0;
+}
+
+.category-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 18rem;
+  min-width: 0;
+}
+
+.category-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1.15rem;
+  flex-wrap: wrap;
+}
+
+.category-card__filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.category-card__body {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, 0.85fr) minmax(0, 1.25fr);
+  gap: 1rem;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.category-card__chart-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 10rem;
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+
+.category-card__legend {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.category-card__legend li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.category-card__dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.category-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.category-card__info strong {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.category-card__info span {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+.category-card__amount {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-expense);
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .category-card {
+    min-height: 0;
+  }
+
+  .category-card__body {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .category-card__legend {
+    width: 100%;
+  }
+}

@@ -1,0 +1,52 @@
+# Front (Nginx) + API .NET + Postgres, en la misma red de Docker.
+services:
+  frontend:
+    build:
+      context: .
+      target: final
+    ports:
+      # host:contenedor  ->  abre http://localhost:8080
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ../../Backend/PersonalFinancesAPI
+      dockerfile: Dockerfile
+    ports:
+      # Swagger en el host: http://localhost:5165/swagger
+      - "5165:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      # "postgres" es el nombre del servicio, no localhost.
+      # localhost dentro del contenedor es el propio contenedor.
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=FinanzasApi;Username=postgres;Password=admin;Timeout=10;SSL Mode=Prefer
+      Database__ApplySchema: "true"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: FinanzasApi
+    ports:
+      # 5433 en el host para no chocar con un Postgres local en 5432
+      - "5433:5432"
+    volumes:
+      - finanzas_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d FinanzasApi"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  finanzas_pg:

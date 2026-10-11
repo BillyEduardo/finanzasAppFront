@@ -1,0 +1,136 @@
+<section class="budgets">
+  <div class="budgets__toolbar u-enter">
+    <div class="budgets__toolbar-copy">
+      <p class="budgets__toolbar-label">Acciones rápidas</p>
+      <p class="budgets__toolbar-hint">Crea, duplica o ajusta tu presupuesto activo</p>
+    </div>
+
+    <div class="budgets__actions">
+      <button type="button" class="action-btn action-btn--primary" (click)="openCreate()">
+        <lucide-icon name="circle-plus" [size]="16" />
+        <span>Crear presupuesto</span>
+      </button>
+      <button type="button" class="action-btn" (click)="openDuplicate()">
+        <lucide-icon name="copy" [size]="16" />
+        <span>Duplicar</span>
+      </button>
+      <button type="button" class="action-btn" (click)="openAdjust()">
+        <lucide-icon name="sliders-horizontal" [size]="16" />
+        <span>Ajustar categorías</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="budgets__stats">
+    <article class="dash-card stat-card u-enter-card">
+      <div class="stat-card__top">
+        <h3 class="dash-card__title">Presupuesto total</h3>
+        <span class="stat-card__icon" aria-hidden="true">
+          <lucide-icon name="wallet" [size]="18" />
+        </span>
+      </div>
+      <p class="stat-card__value">{{ totals().total | currencyRd }}</p>
+      <p class="stat-card__meta">Asignado este periodo</p>
+    </article>
+
+    <article class="dash-card stat-card u-enter-card u-enter-delay-1">
+      <div class="stat-card__top">
+        <h3 class="dash-card__title">Gastado</h3>
+        <span class="stat-card__icon" aria-hidden="true">
+          <lucide-icon name="trending-down" [size]="18" />
+        </span>
+      </div>
+      <p class="stat-card__value stat-card__value--expense">{{ totals().spent | currencyRd }}</p>
+      <div class="stat-card__bar" aria-hidden="true">
+        <span [style.width.%]="spentBarWidth()"></span>
+      </div>
+      <p class="stat-card__bar-label">{{ totals().spentPercent }}% del presupuesto</p>
+    </article>
+
+    <article class="dash-card stat-card u-enter-card u-enter-delay-2">
+      <div class="stat-card__top">
+        <h3 class="dash-card__title">Disponible</h3>
+        <span class="stat-card__icon" aria-hidden="true">
+          <lucide-icon name="credit-card" [size]="18" />
+        </span>
+      </div>
+      <p class="stat-card__value stat-card__value--income">{{ totals().available | currencyRd }}</p>
+      <p class="stat-card__meta">{{ totals().availablePercent }}% restante</p>
+    </article>
+
+    <article class="dash-card stat-card u-enter-card u-enter-delay-3">
+      <div class="stat-card__top">
+        <h3 class="dash-card__title">Sobre el presupuesto</h3>
+        <span class="stat-card__icon stat-card__icon--danger" aria-hidden="true">
+          <lucide-icon name="alert-triangle" [size]="18" />
+        </span>
+      </div>
+      <p class="stat-card__value stat-card__value--expense">{{ totals().overAmount | currencyRd }}</p>
+      <p class="stat-card__meta">{{ totals().overCategories }} categorías</p>
+    </article>
+  </div>
+
+  <div class="budgets__charts">
+    <app-budget-summary-card
+      [categories]="activeBudget()?.categories ?? []"
+      [spent]="totals().spent"
+      [spentPercent]="totals().spentPercent"
+    />
+    <app-budget-evolution-card [total]="totals().total" [spent]="totals().spent" />
+  </div>
+
+  <div class="budgets__bottom">
+    <app-budget-categories-table
+      [rows]="categoryRows()"
+      (registerSpend)="openRegisterSpend($event)"
+      (adjustLimit)="openAdjustFromRow($event)"
+    />
+
+    <aside class="budgets__aside">
+      <article class="dash-card saved-card u-enter-card u-enter-delay-5">
+        <header class="saved-card__head">
+          <h3 class="dash-card__heading">Presupuestos guardados</h3>
+        </header>
+
+        <ul class="saved-card__list">
+          @for (budget of budgets(); track budget.id) {
+            <li>
+              <button
+                type="button"
+                class="saved-card__item"
+                [class.saved-card__item--active]="isActive(budget)"
+                (click)="selectBudget(budget.id)"
+              >
+                <div class="saved-card__text">
+                  <strong>
+                    {{ budget.periodLabel }}
+                    @if (budget.status === 'Active') {
+                      <span class="saved-card__badge">Activo</span>
+                    }
+                  </strong>
+                  <span>{{ budget.total | currencyRd }}</span>
+                </div>
+                <lucide-icon name="chevron-right" [size]="16" />
+              </button>
+            </li>
+          }
+        </ul>
+      </article>
+    </aside>
+  </div>
+</section>
+
+<app-budget-editor-modal
+  [open]="editorOpen()"
+  [mode]="editorMode()"
+  [budget]="activeBudget()"
+  (closed)="closeEditor()"
+  (saved)="onEditorSaved($event)"
+/>
+
+<app-budget-spend-modal
+  [open]="spendOpen()"
+  [category]="spendCategory()"
+  (closed)="closeSpend()"
+  (saved)="onSpendSaved($event)"
+/>

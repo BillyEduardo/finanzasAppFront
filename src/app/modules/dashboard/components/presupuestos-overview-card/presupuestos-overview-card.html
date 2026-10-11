@@ -1,0 +1,38 @@
+<article class="dash-card budgets-card u-enter-card u-enter-delay-4">
+  <header class="budgets-card__head">
+    <h3 class="dash-card__heading">Presupuestos</h3>
+  </header>
+
+  <div class="budgets-card__grid">
+    @for (budget of budgets; track budget.title) {
+      <div class="budget-item">
+        <div class="budget-item__ring" aria-hidden="true">
+          <svg viewBox="0 0 88 88">
+            <circle class="budget-item__track" cx="44" cy="44" r="36" />
+            <circle
+              class="budget-item__progress"
+              cx="44"
+              cy="44"
+              r="36"
+              [attr.stroke-dasharray]="circumference"
+              [attr.stroke-dashoffset]="dashOffset(budget.percent)"
+            />
+          </svg>
+          <span>{{ budget.percent }}%</span>
+        </div>
+
+        <div class="budget-item__info">
+          <strong>{{ budget.title }}</strong>
+          <p>
+            {{ budget.spent | currencyRd }}
+            <span>/ {{ budget.total | currencyRd }}</span>
+          </p>
+          <small>
+            Restante:
+            <em>{{ remaining(budget.spent, budget.total) | currencyRd }}</em>
+          </small>
+        </div>
+      </div>
+    }
+  </div>
+</article>

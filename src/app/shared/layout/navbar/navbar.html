@@ -1,0 +1,51 @@
+<header class="navbar">
+  <div class="navbar__left">
+    <button
+      type="button"
+      class="navbar__menu-btn"
+      aria-label="Abrir menú"
+      (click)="onMenuToggle()"
+    >
+      <lucide-icon name="panel-left" [size]="20" />
+    </button>
+
+    <div class="navbar__title-wrap">
+      <h1 class="navbar__title">{{ pageTitle() }}</h1>
+      <p class="navbar__subtitle">{{ pageSubtitle() }}</p>
+    </div>
+  </div>
+
+  <div class="navbar__right">
+    <button type="button" class="navbar__period" aria-label="Seleccionar periodo">
+      <lucide-icon name="calendar" [size]="16" />
+      <span>{{ periodLabel() }}</span>
+      <lucide-icon name="chevron-down" [size]="16" />
+    </button>
+
+    <button
+      type="button"
+      class="navbar__theme"
+      [attr.aria-label]="isDark() ? 'Activar modo claro' : 'Activar modo oscuro'"
+      [attr.title]="isDark() ? 'Modo claro' : 'Modo oscuro'"
+      (click)="toggleTheme()"
+    >
+      <lucide-icon [name]="isDark() ? 'sun' : 'moon'" [size]="18" />
+    </button>
+
+    <button type="button" class="navbar__user" aria-label="Menú de usuario">
+      <span class="navbar__avatar" aria-hidden="true">{{ userInitials() }}</span>
+      <span class="navbar__user-name">{{ userName() }}</span>
+      <lucide-icon class="navbar__user-chevron" name="chevron-down" [size]="16" />
+    </button>
+
+    <button
+      type="button"
+      class="navbar__logout"
+      aria-label="Cerrar sesión"
+      title="Cerrar sesión"
+      (click)="onLogout()"
+    >
+      <lucide-icon name="log-out" [size]="18" />
+    </button>
+  </div>
+</header>

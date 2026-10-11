@@ -1,0 +1,62 @@
+@if (open()) {
+  <div class="confirm-modal-backdrop u-enter-fade" (click)="onBackdropClick($event)" role="presentation">
+    <div
+      class="confirm-modal u-enter-card"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="title()"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="confirm-modal__head">
+        @if (icon(); as iconName) {
+          <span
+            class="confirm-modal__icon"
+            [class.confirm-modal__icon--danger]="confirmVariant() === 'danger'"
+            aria-hidden="true"
+          >
+            <lucide-icon [name]="iconName" [size]="22" />
+          </span>
+        }
+
+        <div class="confirm-modal__copy">
+          <h2>{{ title() }}</h2>
+          @if (message()) {
+            <p>{{ message() }}</p>
+          }
+          <ng-content />
+        </div>
+
+        <button
+          type="button"
+          class="confirm-modal__close"
+          aria-label="Cerrar"
+          [disabled]="loading()"
+          (click)="cancel()"
+        >
+          <lucide-icon name="x" [size]="18" />
+        </button>
+      </header>
+
+      <footer class="confirm-modal__actions">
+        <button type="button" class="confirm-modal__btn" [disabled]="loading()" (click)="cancel()">
+          {{ cancelLabel() }}
+        </button>
+        <button
+          type="button"
+          class="confirm-modal__btn"
+          [class.confirm-modal__btn--primary]="confirmVariant() === 'primary'"
+          [class.confirm-modal__btn--danger]="confirmVariant() === 'danger'"
+          [disabled]="loading()"
+          (click)="confirm()"
+        >
+          @if (loading()) {
+            <span class="confirm-modal__spinner" aria-hidden="true"></span>
+            Procesando…
+          } @else {
+            {{ confirmLabel() }}
+          }
+        </button>
+      </footer>
+    </div>
+  </div>
+}

@@ -1,0 +1,53 @@
+@if (open()) {
+  <div class="modal-backdrop u-enter-fade" (click)="onBackdropClick($event)" role="presentation">
+    <div
+      class="modal u-enter-card"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Registrar gasto"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="modal__head">
+        <div>
+          <h2>Registrar gasto</h2>
+          @if (category(); as cat) {
+            <p>
+              {{ cat.name }} · Límite {{ cat.budgeted | currencyRd }} · Gastado
+              {{ cat.spent | currencyRd }}
+            </p>
+          }
+        </div>
+        <button type="button" class="modal__close" aria-label="Cerrar" (click)="close()">
+          <lucide-icon name="x" [size]="18" />
+        </button>
+      </header>
+
+      <form class="modal__body" [formGroup]="form" (ngSubmit)="submit()">
+        <label class="field">
+          <span>Modo</span>
+          <select formControlName="mode">
+            <option value="add">Sumar al gasto actual</option>
+            <option value="set">Reemplazar gasto total</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Monto</span>
+          <input type="number" formControlName="amount" min="0.01" step="50" placeholder="0.00" />
+        </label>
+
+        @if (errorMessage()) {
+          <p class="modal__error" role="alert">{{ errorMessage() }}</p>
+        }
+
+        <footer class="modal__footer">
+          <button type="button" class="btn btn--ghost" (click)="close()">Cancelar</button>
+          <button type="submit" class="btn btn--primary">
+            <lucide-icon name="check" [size]="16" />
+            Guardar
+          </button>
+        </footer>
+      </form>
+    </div>
+  </div>
+}

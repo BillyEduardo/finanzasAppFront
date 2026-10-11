@@ -1,0 +1,13 @@
+<article class="dash-card day-card u-enter-card u-enter-delay-3">
+  <header class="day-card__head">
+    <h3 class="dash-card__heading">Gastos por día</h3>
+    <button type="button" class="day-card__filter" aria-label="Filtrar mes">
+      Mayo 2025
+      <lucide-icon name="chevron-down" [size]="14" />
+    </button>
+  </header>
+
+  <div class="day-card__chart">
+    <canvas #chart aria-label="Gráfico de gastos por día"></canvas>
+  </div>
+</article>

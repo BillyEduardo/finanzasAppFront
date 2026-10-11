@@ -1,0 +1,86 @@
+@if (open()) {
+  <div class="modal-backdrop u-enter-fade" (click)="onBackdropClick($event)" role="presentation">
+    <div
+      class="modal u-enter-card"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="title()"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="modal__head">
+        <div>
+          <h2>{{ title() }}</h2>
+          <p>{{ subtitle() }}</p>
+        </div>
+        <button type="button" class="modal__close" aria-label="Cerrar" (click)="close()">
+          <lucide-icon name="x" [size]="18" />
+        </button>
+      </header>
+
+      <form class="modal__body" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="modal__grid">
+          <label class="field">
+            <span>Nombre</span>
+            <input type="text" formControlName="name" placeholder="Ej. Presupuesto Mayo" />
+          </label>
+
+          <label class="field">
+            <span>Tipo de periodo</span>
+            <select formControlName="periodType">
+              <option value="Monthly">Mensual</option>
+              <option value="Biweekly">Quincenal</option>
+              <option value="Custom">Personalizado</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Etiqueta del periodo</span>
+            <input type="text" formControlName="periodLabel" placeholder="Mayo 2026" />
+          </label>
+
+          <label class="field">
+            <span>Presupuesto total</span>
+            <input type="number" formControlName="total" min="1" step="100" />
+          </label>
+        </div>
+
+        <div class="modal__alloc-head">
+          <h3>Distribución por categoría</h3>
+          <div class="modal__alloc-meta">
+            <span>Asignado: <strong>{{ allocated() | currencyRd }}</strong></span>
+            <span
+              [class.modal__remaining--ok]="remaining() >= 0"
+              [class.modal__remaining--bad]="remaining() < 0"
+            >
+              Restante: <strong>{{ remaining() | currencyRd }}</strong>
+            </span>
+          </div>
+        </div>
+
+        <div class="modal__categories" formArrayName="categories">
+          @for (ctrl of categories.controls; track ctrl.value.categoryId; let i = $index) {
+            <div class="cat-row" [formGroupName]="i">
+              <span class="cat-row__icon" [style.color]="ctrl.value.color" aria-hidden="true">
+                <lucide-icon [name]="ctrl.value.icon!" [size]="16" />
+              </span>
+              <span class="cat-row__name">{{ ctrl.value.name }}</span>
+              <input type="number" formControlName="budgeted" min="0" step="100" />
+            </div>
+          }
+        </div>
+
+        @if (errorMessage()) {
+          <p class="modal__error" role="alert">{{ errorMessage() }}</p>
+        }
+
+        <footer class="modal__footer">
+          <button type="button" class="btn btn--ghost" (click)="close()">Cancelar</button>
+          <button type="submit" class="btn btn--primary">
+            <lucide-icon name="check" [size]="16" />
+            {{ mode() === 'adjust' ? 'Guardar cambios' : 'Guardar presupuesto' }}
+          </button>
+        </footer>
+      </form>
+    </div>
+  </div>
+}

@@ -1,0 +1,130 @@
+:host {
+  display: block;
+  height: 100%;
+  min-width: 0;
+}
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 20rem;
+}
+
+.summary-card__head {
+  margin-bottom: 1rem;
+}
+
+.summary-card__body {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.9fr) minmax(0, 1.2fr);
+  gap: 1.15rem;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.summary-card__chart-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 11.5rem;
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+
+.summary-card__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  text-align: center;
+  padding: 1rem;
+}
+
+.summary-card__center strong {
+  font-size: clamp(0.78rem, 1.5vw, 0.92rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.summary-card__center span {
+  margin-top: 0.15rem;
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+}
+
+.summary-card__center em {
+  margin-top: 0.2rem;
+  font-style: normal;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.summary-card__legend {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.summary-card__legend li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.summary-card__dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.summary-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.summary-card__info strong {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary-card__info span {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+.summary-card__amount {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .summary-card__body {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .summary-card__legend {
+    width: 100%;
+  }
+}

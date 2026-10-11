@@ -1,0 +1,28 @@
+<article class="dash-card category-card u-enter-card u-enter-delay-2">
+  <header class="category-card__head">
+    <h3 class="dash-card__heading">Gastos por categoría</h3>
+    <button type="button" class="category-card__filter" aria-label="Filtrar periodo">
+      Este mes
+      <lucide-icon name="chevron-down" [size]="14" />
+    </button>
+  </header>
+
+  <div class="category-card__body">
+    <div class="category-card__chart-wrap">
+      <canvas #chart aria-label="Gráfico de gastos por categoría"></canvas>
+    </div>
+
+    <ul class="category-card__legend">
+      @for (slice of slices; track slice.label) {
+        <li>
+          <span class="category-card__dot" [style.background]="slice.color"></span>
+          <div class="category-card__info">
+            <strong>{{ slice.label }}</strong>
+            <span>{{ slice.percent }}%</span>
+          </div>
+          <span class="category-card__amount">{{ slice.amount | currencyRd }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+</article>

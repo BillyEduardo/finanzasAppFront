@@ -1,0 +1,27 @@
+<article class="dash-card recent-card u-enter-card u-enter-delay-4">
+  <header class="recent-card__head">
+    <h3 class="dash-card__heading">Registros recientes</h3>
+  </header>
+
+  <ul class="recent-card__list">
+    @for (record of records; track record.name + record.date) {
+      <li class="recent-card__item">
+        <span class="recent-card__icon" aria-hidden="true">
+          <lucide-icon [name]="record.icon" [size]="16" />
+        </span>
+        <div class="recent-card__info">
+          <strong>{{ record.name }}</strong>
+          <span>{{ record.category }}</span>
+        </div>
+        <div class="recent-card__meta">
+          <strong [class.recent-card__amount--income]="record.tone === 'income'">
+            {{ record.amount | currencyRd }}
+          </strong>
+          <span>{{ record.date }}</span>
+        </div>
+      </li>
+    }
+  </ul>
+
+  <a routerLink="/transactions" class="recent-card__link">Ver todos los registros</a>
+</article>

@@ -1,0 +1,226 @@
+<section class="categories">
+  <div class="categories__toolbar u-enter">
+    <div class="categories__toolbar-copy">
+      <p class="categories__toolbar-label">Gestión</p>
+      <p class="categories__toolbar-hint">Crea y organiza las categorías de tus finanzas</p>
+    </div>
+    <button type="button" class="action-btn action-btn--primary" (click)="openCreate()">
+      <lucide-icon name="plus" [size]="16" />
+      <span>Nueva categoría</span>
+    </button>
+  </div>
+
+  <div class="categories__stats">
+    <article class="dash-card stat-card u-enter-card">
+      <div class="stat-card__top">
+        <h3 class="dash-card__title">Categorías totales</h3>
+        <span class="stat-card__icon" aria-hidden="true">
+          <lucide-icon name="layout-grid" [size]="18" />
+        </span>
+      </div>
+      <p class="stat-card__value">{{ stats().total }}</p>
+      <p class="stat-card__meta">Todas tus categorías</p>
+    </article>
+
+    <article class="dash-card stat-card u-enter-card u-enter-delay-1">
+      <div class="stat-card__top">
+        <h3 class="dash-card__title">Categorías activas</h3>
+        <span class="stat-card__icon stat-card__icon--blue" aria-hidden="true">
+          <lucide-icon name="tag" [size]="18" />
+        </span>
+      </div>
+      <p class="stat-card__value">{{ stats().active }}</p>
+      <p class="stat-card__meta">Categorías en uso</p>
+    </article>
+
+    <article class="dash-card stat-card u-enter-card u-enter-delay-2">
+      <div class="stat-card__top">
+        <h3 class="dash-card__title">Categorías inactivas</h3>
+        <span class="stat-card__icon stat-card__icon--danger" aria-hidden="true">
+          <lucide-icon name="archive" [size]="18" />
+        </span>
+      </div>
+      <p class="stat-card__value">{{ stats().inactive }}</p>
+      <p class="stat-card__meta">Categorías deshabilitadas</p>
+    </article>
+  </div>
+
+  <article class="dash-card table-card u-enter-card u-enter-delay-3">
+    <div class="filters">
+      <label class="filters__search">
+        <lucide-icon name="search" [size]="16" />
+        <input
+          type="search"
+          [ngModel]="search()"
+          (ngModelChange)="onSearch($event)"
+          placeholder="Buscar categoría..."
+          aria-label="Buscar categoría"
+        />
+      </label>
+
+      <select
+        class="filters__select"
+        [ngModel]="kindFilter()"
+        (ngModelChange)="onKindFilter($event)"
+        aria-label="Filtrar por tipo"
+      >
+        <option value="all">Todas las categorías</option>
+        <option value="Expense">Gastos</option>
+        <option value="Income">Ingresos</option>
+        <option value="Both">Ambos</option>
+      </select>
+
+      <select
+        class="filters__select"
+        [ngModel]="statusFilter()"
+        (ngModelChange)="onStatusFilter($event)"
+        aria-label="Filtrar por estado"
+      >
+        <option value="all">Estado: Todas</option>
+        <option value="active">Activas</option>
+        <option value="inactive">Inactivas</option>
+      </select>
+
+      <button type="button" class="filters__clear" (click)="clearFilters()">
+        <lucide-icon name="refresh-cw" [size]="15" />
+        Limpiar filtros
+      </button>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Categoría</th>
+            <th>Tipo</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (category of paged(); track category.id) {
+            <tr>
+              <td>
+                <div class="cat-cell">
+                  <span
+                    class="cat-cell__icon"
+                    [style.background]="category.color || 'var(--color-primary)'"
+                    aria-hidden="true"
+                  >
+                    <lucide-icon [name]="category.icon || 'tag'" [size]="15" />
+                  </span>
+                  <strong>{{ category.name }}</strong>
+                </div>
+              </td>
+              <td>
+                <span
+                  class="type-badge"
+                  [class.type-badge--income]="category.kind === 'Income'"
+                  [class.type-badge--both]="category.kind === 'Both'"
+                >
+                  {{ kindLabel(category.kind) }}
+                </span>
+              </td>
+              <td class="desc-cell">{{ category.description || '—' }}</td>
+              <td>
+                <span class="status-badge" [class.status-badge--inactive]="!isActive(category)">
+                  {{ isActive(category) ? 'Activa' : 'Inactiva' }}
+                </span>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <button
+                    type="button"
+                    class="icon-btn"
+                    aria-label="Editar categoría"
+                    (click)="openEdit(category)"
+                  >
+                    <lucide-icon name="pencil" [size]="15" />
+                  </button>
+                  <button
+                    type="button"
+                    class="icon-btn icon-btn--danger"
+                    aria-label="Eliminar categoría"
+                    (click)="askDelete(category.id)"
+                  >
+                    <lucide-icon name="trash2Icon" [size]="15" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="empty-cell">No hay categorías con esos filtros.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="table-footer">
+      <p>{{ rangeLabel() }}</p>
+      <div class="pager">
+        <button
+          type="button"
+          class="pager__btn"
+          aria-label="Página anterior"
+          [disabled]="page() <= 1"
+          (click)="goToPage(page() - 1)"
+        >
+          <lucide-icon name="chevron-left" [size]="16" />
+        </button>
+
+        @for (p of pages(); track p) {
+          <button
+            type="button"
+            class="pager__btn"
+            [class.pager__btn--active]="page() === p"
+            (click)="goToPage(p)"
+          >
+            {{ p }}
+          </button>
+        }
+
+        <button
+          type="button"
+          class="pager__btn"
+          aria-label="Página siguiente"
+          [disabled]="page() >= totalPages()"
+          (click)="goToPage(page() + 1)"
+        >
+          <lucide-icon name="chevron-right" [size]="16" />
+        </button>
+      </div>
+    </footer>
+  </article>
+</section>
+
+<app-category-form-modal
+  [open]="modalOpen()"
+  [mode]="modalMode()"
+  [category]="editing()"
+  (closed)="closeModal()"
+  (saved)="onSaved($event)"
+/>
+
+@if (confirmDeleteId()) {
+  <div class="modal-backdrop u-enter-fade" (click)="cancelDelete()" role="presentation">
+    <div
+      class="confirm-modal u-enter-card"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Confirmar eliminación"
+      (click)="$event.stopPropagation()"
+    >
+      <h2>Eliminar categoría</h2>
+      <p>Esta acción no se puede deshacer. ¿Seguro que quieres eliminarla?</p>
+      <div class="confirm-modal__actions">
+        <button type="button" class="action-btn" (click)="cancelDelete()">Cancelar</button>
+        <button type="button" class="action-btn action-btn--danger" (click)="confirmDelete()">
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+}

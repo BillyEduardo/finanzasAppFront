@@ -1,0 +1,261 @@
+<div class="login" [class.login--dark]="darkMode()">
+  <!-- Panel de marca -->
+  <aside class="login__brand" aria-hidden="false">
+    <div class="login__brand-inner">
+      <div class="login__logo u-enter">
+        <span class="login__logo-mark" aria-hidden="true">
+          <lucide-icon name="activity" [size]="20" />
+        </span>
+        <span class="login__logo-text">Finanzas</span>
+      </div>
+
+      <h1 class="login__headline u-enter u-enter-delay-1">
+        Controla tu dinero,<br />
+        <span>controla tu vida</span>
+      </h1>
+      <p class="login__tagline u-enter u-enter-delay-2">
+        La plataforma inteligente para gestionar tus finanzas personales.
+      </p>
+
+      <div class="login__showcase u-enter u-enter-delay-3" aria-hidden="true">
+        <!-- Card principal: resumen mensual -->
+        <div class="showcase-card showcase-card--main">
+          <div class="showcase-card__head">
+            <span>Resumen mensual</span>
+            <span class="showcase-card__pill">+12.4%</span>
+          </div>
+          <p class="showcase-card__amount">RD$ 32,450.00</p>
+          <svg class="showcase-card__chart" viewBox="0 0 280 72" fill="none">
+            <defs>
+              <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#09bc8a" stop-opacity="0.35" />
+                <stop offset="100%" stop-color="#09bc8a" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M0 52 C28 48 42 28 70 32 C98 36 112 58 140 48 C168 38 182 18 210 22 C238 26 252 40 280 28 L280 72 L0 72 Z"
+              fill="url(#chartFill)"
+            />
+            <path
+              d="M0 52 C28 48 42 28 70 32 C98 36 112 58 140 48 C168 38 182 18 210 22 C238 26 252 40 280 28"
+              stroke="#09bc8a"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+
+        <!-- Card donut -->
+        <div class="showcase-card showcase-card--donut">
+          <div class="donut" style="--pct: 65">
+            <svg viewBox="0 0 36 36">
+              <circle
+                cx="18"
+                cy="18"
+                r="14"
+                fill="none"
+                stroke="rgba(255,255,255,0.12)"
+                stroke-width="4"
+              />
+              <circle
+                class="donut__arc"
+                cx="18"
+                cy="18"
+                r="14"
+                fill="none"
+                stroke="#09bc8a"
+                stroke-width="4"
+                stroke-linecap="round"
+                stroke-dasharray="65 100"
+                transform="rotate(-90 18 18)"
+              />
+            </svg>
+            <span>65%</span>
+          </div>
+          <ul class="donut-legend">
+            <li><i style="--c: #09bc8a"></i> Alimentación</li>
+            <li><i style="--c: #75dddd"></i> Transporte</li>
+            <li><i style="--c: #508991"></i> Hogar</li>
+          </ul>
+        </div>
+
+        <!-- Card presupuesto -->
+        <div class="showcase-card showcase-card--budget">
+          <div class="showcase-card__head">
+            <span>Presupuesto</span>
+            <strong>65%</strong>
+          </div>
+          <div class="budget-bar">
+            <span style="width: 65%"></span>
+          </div>
+          <p class="showcase-card__amount showcase-card__amount--sm">RD$ 50,000.00</p>
+        </div>
+
+        <!-- Barras 3D -->
+        <div class="showcase-bars">
+          <span style="--h: 42%"></span>
+          <span style="--h: 68%"></span>
+          <span style="--h: 55%"></span>
+          <span style="--h: 88%"></span>
+        </div>
+
+        <!-- Mini card flotante -->
+        <div class="showcase-mini">
+          <lucide-icon name="trending-up" [size]="16" />
+          <svg viewBox="0 0 48 20" fill="none">
+            <path
+              d="M1 15 L12 10 L20 14 L32 4 L47 8"
+              stroke="#09bc8a"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Panel del formulario -->
+  <section class="login__panel">
+    <header class="login__topbar u-enter u-enter-delay-1">
+      <button
+        type="button"
+        class="theme-toggle"
+        [attr.aria-label]="darkMode() ? 'Activar modo claro' : 'Activar modo oscuro'"
+        (click)="toggleDarkMode()"
+      >
+        <span class="theme-toggle__track" [class.theme-toggle__track--on]="darkMode()">
+          <lucide-icon [name]="darkMode() ? 'moon' : 'sun'" [size]="14" />
+        </span>
+      </button>
+      <a class="login__help" href="mailto:soporte@finanzas.app">¿Necesitas ayuda?</a>
+    </header>
+
+    <div class="login__card-wrap">
+      <div class="login__card u-enter-card u-enter-delay-2">
+        <div class="login__card-badge" aria-hidden="true">
+          <lucide-icon name="activity" [size]="22" />
+        </div>
+
+        <h2 class="login__title">Bienvenido</h2>
+        <p class="login__subtitle">Inicia sesión para continuar</p>
+
+        @if (errorMessage()) {
+          <div class="login__alert" role="alert">
+            <lucide-icon name="circle-alert" [size]="18" />
+            <span>{{ errorMessage() }}</span>
+          </div>
+        }
+
+        <form class="login__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+          <label class="field">
+            <span class="field__label">Correo electrónico</span>
+            <div
+              class="field__control"
+              [class.field__control--invalid]="
+                form.controls.email.touched && form.controls.email.invalid
+              "
+            >
+              <lucide-icon name="mail" [size]="18" />
+              <input
+                type="email"
+                formControlName="email"
+                placeholder="ejemplo@correo.com"
+                autocomplete="email"
+                [attr.aria-invalid]="form.controls.email.touched && form.controls.email.invalid"
+              />
+            </div>
+            @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+              <span class="field__error">El correo es obligatorio</span>
+            }
+          </label>
+
+          <label class="field">
+            <span class="field__label">Contraseña</span>
+            <div
+              class="field__control"
+              [class.field__control--invalid]="
+                form.controls.password.touched && form.controls.password.invalid
+              "
+            >
+              <lucide-icon name="lock" [size]="18" />
+              <input
+                [type]="showPassword() ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="••••••••"
+                autocomplete="current-password"
+                [attr.aria-invalid]="
+                  form.controls.password.touched && form.controls.password.invalid
+                "
+              />
+              <button
+                type="button"
+                class="field__toggle"
+                [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                (click)="togglePassword()"
+              >
+                <lucide-icon [name]="showPassword() ? 'eye-off' : 'eye'" [size]="18" />
+              </button>
+            </div>
+            @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+              <span class="field__error">La contraseña es obligatoria</span>
+            }
+          </label>
+
+          <div class="login__options">
+            <label class="checkbox">
+              <input type="checkbox" formControlName="rememberMe" />
+              <span class="checkbox__box" aria-hidden="true">
+                <lucide-icon name="check" [size]="12" />
+              </span>
+              <span>Recordarme</span>
+            </label>
+            <a class="login__link" href="#" (click)="$event.preventDefault()"
+              >¿Olvidaste tu contraseña?</a
+            >
+          </div>
+
+          <button class="btn btn--primary" type="submit" [disabled]="loading()">
+            @if (loading()) {
+              <span class="btn__spinner" aria-hidden="true"></span>
+              Iniciando…
+            } @else {
+              Iniciar sesión
+            }
+          </button>
+        </form>
+
+        <div class="login__divider">
+          <span>o continuar con</span>
+        </div>
+
+        <button type="button" class="btn btn--google" disabled title="Próximamente">
+          <svg class="btn__google-icon" viewBox="0 0 48 48" aria-hidden="true">
+            <path
+              fill="#FFC107"
+              d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.2 6.1 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"
+            />
+            <path
+              fill="#FF3D00"
+              d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.2 6.1 29.4 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"
+            />
+            <path
+              fill="#4CAF50"
+              d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.3 26.7 36 24 36c-5.3 0-9.7-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"
+            />
+            <path
+              fill="#1976D2"
+              d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.5l.1.1 6.2 5.2C39.2 37.3 44 32 44 24c0-1.3-.1-2.6-.4-3.9z"
+            />
+          </svg>
+          Continuar con Google
+        </button>
+
+        <p class="login__footer">
+          ¿No tienes cuenta?
+          <a routerLink="/register">Crear cuenta</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>

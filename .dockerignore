@@ -1,0 +1,21 @@
+# Archivos que NO deben copiarse al contexto de build de Docker
+
+**/.DS_Store
+**/.git
+**/.gitignore
+**/.idea
+**/.vscode
+**/.angular
+**/dist
+**/coverage
+**/node_modules
+**/npm-debug.log
+**/.env
+**/.dockerignore
+**/docker-compose*
+**/compose.y*ml
+**/Dockerfile*
+**/*.*proj.user
+LICENSE
+README.md
+README.Docker.md
