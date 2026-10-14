@@ -1,0 +1,48 @@
+# CI de la rama dev.
+# GitHub lee este archivo solo cuando está en el commit que se empuja o en el pull request.
+# No despliega nada: instala, corre los tests y comprueba que la app compila.
+
+name: CI Dev
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+  # Permite lanzarlo a mano desde la pestaña Actions del repositorio.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Si llega un push nuevo mientras este sigue corriendo, cancela el anterior.
+concurrency:
+  group: ci-dev-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Instalar, testear y compilar
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar tests
+        run: npm test -- --watch=false
+
+      - name: Compilar la aplicación
+        run: npm run build
