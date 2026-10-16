@@ -1,7 +1,7 @@
 # CI de la rama dev.
-# En cada push a dev: tests, compilación y, si pasan, publica la imagen Docker
-# en GitHub Container Registry para poder descargarla en otro entorno.
-# Un pull request solo corre los tests; no publica imagen.
+# En cada push a dev: tests, compilación y publicación de la imagen.
+# Si eso sale bien, llama a cd-dev.yml para desplegar.
+# Un pull request solo corre los tests.
 
 name: CI Dev
 
@@ -96,3 +96,13 @@ jobs:
           provenance: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    name: Desplegar en el entorno dev
+    needs: publish-image
+    if: github.event_name != 'pull_request'
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/cd-dev.yml
+    secrets: inherit

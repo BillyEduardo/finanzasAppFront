@@ -1,0 +1,76 @@
+# CD de la rama dev.
+# Lo llama ci-dev.yml cuando la imagen ya está publicada.
+# También se puede lanzar a mano desde Actions para repetir el despliegue
+# sin volver a correr los tests.
+#
+# Secretos del repositorio (Settings → Secrets and variables → Actions):
+#   DEV_HOST      IP o dominio de la máquina
+#   DEV_USER      usuario que puede ejecutar docker
+#   DEV_SSH_KEY   llave privada (el texto completo, incluida la línea BEGIN)
+# Variables opcionales:
+#   DEV_PORT             puerto en esa máquina (si no existe, usa 8080)
+#   DEV_DOCKER_NETWORK   red de Docker donde ya está el contenedor "backend"
+
+name: CD Dev
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: cd-dev
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Actualizar el contenedor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Comprobar los datos de la máquina
+        env:
+          DEV_HOST: ${{ secrets.DEV_HOST }}
+          DEV_USER: ${{ secrets.DEV_USER }}
+          DEV_SSH_KEY: ${{ secrets.DEV_SSH_KEY }}
+        run: |
+          if [ -z "$DEV_HOST" ] || [ -z "$DEV_USER" ] || [ -z "$DEV_SSH_KEY" ]; then
+            echo "Faltan DEV_HOST, DEV_USER o DEV_SSH_KEY en los secretos del repositorio."
+            exit 1
+          fi
+
+      - name: Actualizar el contenedor
+        uses: appleboy/ssh-action@v1.2.2
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+          IMAGE: ghcr.io/${{ github.repository }}
+          HOST_PORT: ${{ vars.DEV_PORT }}
+          DOCKER_NETWORK: ${{ vars.DEV_DOCKER_NETWORK }}
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USER }}
+          key: ${{ secrets.DEV_SSH_KEY }}
+          command_timeout: 10m
+          script_stop: true
+          envs: GHCR_TOKEN,GHCR_USER,IMAGE,HOST_PORT,DOCKER_NETWORK
+          script: |
+            set -eu
+            HOST_PORT="${HOST_PORT:-8080}"
+            IMAGE="$(printf '%s' "$IMAGE" | tr '[:upper:]' '[:lower:]'):dev"
+            cleanup() { docker logout ghcr.io >/dev/null 2>&1 || true; }
+            trap cleanup EXIT
+            printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            docker pull "$IMAGE"
+            docker rm -f finanzas-front >/dev/null 2>&1 || true
+            if [ -n "${DOCKER_NETWORK:-}" ]; then
+              docker network inspect "$DOCKER_NETWORK" >/dev/null 2>&1 || docker network create "$DOCKER_NETWORK"
+              docker run -d --name finanzas-front --restart unless-stopped --network "$DOCKER_NETWORK" -p "$HOST_PORT:80" "$IMAGE"
+            else
+              docker run -d --name finanzas-front --restart unless-stopped -p "$HOST_PORT:80" "$IMAGE"
+            fi
+            docker ps --filter name=finanzas-front --format '{{.Names}} {{.Status}} {{.Ports}}'
